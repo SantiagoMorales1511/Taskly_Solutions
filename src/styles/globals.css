@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-dark-border;
+  }
+  
+  body {
+    @apply bg-dark-bg text-gray-100 font-sans antialiased;
+    scroll-behavior: smooth;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-green to-primary-purple;
+  }
+
+  .glow-green {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3), 0 0 20px rgba(16, 185, 129, 0.1);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.3), 0 0 20px rgba(139, 92, 246, 0.1);
+  }
+
+  .glow-both {
+    box-shadow: 
+      0 0 10px rgba(16, 185, 129, 0.3),
+      0 0 20px rgba(139, 92, 246, 0.3),
+      0 0 30px rgba(16, 185, 129, 0.1);
+  }
+
+  .cursor-blink {
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+}
+
