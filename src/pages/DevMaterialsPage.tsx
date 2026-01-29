@@ -3,7 +3,7 @@ import { Navbar } from '../sections/Navbar';
 import { Footer } from '../sections/Footer';
 import { Card } from '../components/Card';
 
-const DEV_WORKFLOWS_URL = '#';
+const DEV_WORKFLOWS_URL = 'https://pay.hotmart.com/J103882607O?checkoutMode=2';
 
 const faqItems = [
   {
@@ -32,6 +32,150 @@ const DevMaterialsPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
     setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const applyCustomStyles = () => {
+      const styleExists = document.querySelector('style[data-hotmart-override]');
+      if (styleExists) return;
+
+      const style = document.createElement('style');
+      style.setAttribute('data-hotmart-override', 'true');
+      style.textContent = `
+        a.hotmart-fb.hotmart__button-checkout,
+        .hotmart-fb.hotmart__button-checkout {
+          position: relative !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          overflow: hidden !important;
+          background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%) !important;
+          background-image: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%) !important;
+          color: white !important;
+          border: none !important;
+          outline: none !important;
+          text-decoration: none !important;
+          font-weight: 600 !important;
+          backdrop-filter: blur(10px) !important;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          box-shadow: 
+            0 0 15px rgba(16, 185, 129, 0.4),
+            0 0 30px rgba(139, 92, 246, 0.4),
+            0 4px 15px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+          border-radius: 0.5rem !important;
+          padding: 0.75rem 1.5rem !important;
+          box-sizing: border-box !important;
+        }
+        a.hotmart-fb.hotmart__button-checkout::before,
+        .hotmart-fb.hotmart__button-checkout::before {
+          content: '' !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: -100% !important;
+          width: 100% !important;
+          height: 100% !important;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+          transition: left 0.5s ease !important;
+          z-index: 1 !important;
+        }
+        a.hotmart-fb.hotmart__button-checkout:hover,
+        .hotmart-fb.hotmart__button-checkout:hover {
+          background: linear-gradient(135deg, #059669 0%, #7c3aed 100%) !important;
+          background-image: linear-gradient(135deg, #059669 0%, #7c3aed 100%) !important;
+          transform: translateY(-2px) scale(1.02) !important;
+          box-shadow: 
+            0 0 20px rgba(16, 185, 129, 0.6),
+            0 0 40px rgba(139, 92, 246, 0.6),
+            0 0 60px rgba(16, 185, 129, 0.3),
+            0 8px 25px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+          border: none !important;
+          outline: none !important;
+        }
+        a.hotmart-fb.hotmart__button-checkout:hover::before,
+        .hotmart-fb.hotmart__button-checkout:hover::before {
+          left: 100% !important;
+        }
+        a.hotmart-fb.hotmart__button-checkout:active,
+        .hotmart-fb.hotmart__button-checkout:active {
+          transform: translateY(0) scale(0.98) !important;
+        }
+        a.hotmart-fb.hotmart__button-checkout img,
+        .hotmart-fb.hotmart__button-checkout img {
+          display: none !important;
+        }
+        a.hotmart-fb.hotmart__button-checkout > *,
+        .hotmart-fb.hotmart__button-checkout > * {
+          position: relative !important;
+          z-index: 2 !important;
+        }
+      `;
+      document.head.appendChild(style);
+    };
+
+    const importHotmart = () => {
+      const scriptExists = document.querySelector('script[src="https://static.hotmart.com/checkout/widget.min.js"]');
+      const linkExists = document.querySelector('link[href="https://static.hotmart.com/css/hotmart-fb.min.css"]');
+      
+      if (!scriptExists) {
+        const imported = document.createElement('script');
+        imported.src = 'https://static.hotmart.com/checkout/widget.min.js';
+        document.head.appendChild(imported);
+      }
+      
+      if (!linkExists) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://static.hotmart.com/css/hotmart-fb.min.css';
+        
+        link.onload = () => {
+          setTimeout(() => {
+            applyCustomStyles();
+            const buttons = document.querySelectorAll('.hotmart-fb.hotmart__button-checkout');
+            buttons.forEach(btn => {
+              const htmlBtn = btn as HTMLElement;
+              htmlBtn.style.cssText = '';
+              htmlBtn.style.border = 'none';
+              htmlBtn.style.outline = 'none';
+              htmlBtn.style.borderRadius = '0.5rem';
+            });
+          }, 100);
+        };
+        
+        document.head.appendChild(link);
+      } else {
+        setTimeout(() => {
+          applyCustomStyles();
+          const buttons = document.querySelectorAll('.hotmart-fb.hotmart__button-checkout');
+          buttons.forEach(btn => {
+            (btn as HTMLElement).style.cssText = '';
+          });
+        }, 100);
+      }
+    };
+
+    importHotmart();
+    
+    const intervalId = setInterval(() => {
+      const buttons = document.querySelectorAll('.hotmart-fb.hotmart__button-checkout');
+      if (buttons.length > 0) {
+        applyCustomStyles();
+        buttons.forEach(btn => {
+          const htmlBtn = btn as HTMLElement;
+          htmlBtn.style.background = '';
+          htmlBtn.style.backgroundColor = '';
+          htmlBtn.style.backgroundImage = '';
+          htmlBtn.style.border = 'none';
+          htmlBtn.style.outline = 'none';
+          htmlBtn.style.borderRadius = '0.5rem';
+        });
+        clearInterval(intervalId);
+      }
+    }, 200);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -64,8 +208,9 @@ const DevMaterialsPage: React.FC = () => {
               <span>Precio lanzamiento: <span className="text-primary-green-light font-bold">5 USD</span></span>
             </div>
             <a
+              onClick={(e) => { e.preventDefault(); return false; }}
               href={DEV_WORKFLOWS_URL}
-              className="px-4 py-2 rounded-lg font-semibold bg-gradient-to-r from-primary-green to-primary-purple text-white hover:from-primary-green-dark hover:to-primary-purple-dark transition-all duration-300 shadow-md shadow-primary-green/30"
+              className="hotmart-fb hotmart__button-checkout px-4 py-2 rounded-lg font-semibold bg-gradient-to-r from-primary-green to-primary-purple text-white hover:from-primary-green-dark hover:to-primary-purple-dark transition-all duration-300 shadow-md shadow-primary-green/30"
             >
               Comprar ahora
             </a>
@@ -102,8 +247,9 @@ const DevMaterialsPage: React.FC = () => {
                     <p className="text-3xl font-bold text-primary-green-light">5 USD</p>
                   </div>
                   <a
+                    onClick={(e) => { e.preventDefault(); return false; }}
                     href={DEV_WORKFLOWS_URL}
-                    className="px-6 py-3 rounded-lg font-semibold bg-gradient-to-r from-primary-green to-primary-purple text-white hover:from-primary-green-dark hover:to-primary-purple-dark transition-all duration-300 shadow-lg shadow-primary-purple/30"
+                    className="hotmart-fb hotmart__button-checkout px-6 py-3 rounded-lg font-semibold bg-gradient-to-r from-primary-green to-primary-purple text-white hover:from-primary-green-dark hover:to-primary-purple-dark transition-all duration-300 shadow-lg shadow-primary-purple/30"
                   >
                     Quiero el pack por 5 USD
                   </a>
@@ -212,8 +358,9 @@ const DevMaterialsPage: React.FC = () => {
               <p className="text-gray-300 mt-2">Incluye acceso inmediato al pack completo.</p>
             </div>
             <a
+              onClick={(e) => { e.preventDefault(); return false; }}
               href={DEV_WORKFLOWS_URL}
-              className="px-6 py-3 rounded-lg font-semibold bg-gradient-to-r from-primary-green to-primary-purple text-white hover:from-primary-green-dark hover:to-primary-purple-dark transition-all duration-300 shadow-lg shadow-primary-green/30 text-center"
+              className="hotmart-fb hotmart__button-checkout px-6 py-3 rounded-lg font-semibold bg-gradient-to-r from-primary-green to-primary-purple text-white hover:from-primary-green-dark hover:to-primary-purple-dark transition-all duration-300 shadow-lg shadow-primary-green/30 text-center"
             >
               Quiero el pack por 5 USD
             </a>
